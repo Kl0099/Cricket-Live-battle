@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-
+import "../App.css";
+import playerImage from "../assets/cricketground.jpg";
 const ScoreBoard = ({
   playerOneScore,
   playerTwoScore,
@@ -9,22 +10,28 @@ const ScoreBoard = ({
   balls,
   over,
   setIsInningOver,
+  currentInning,
   isInningOver,
 }) => {
   return (
-    <div className="bg-gray-800 text-white p-4 flex justify-between items-center">
+    <div className="bg-gray-800 border min-h-[90px]  text-white p-4 flex justify-between relative items-center">
       <div className="flex items-center flex-col space-x-4">
-        {playerOneScore === undefined ? null : playerTwoScore ? (
+        {currentInning === 2 && (
           <p>
-            player Two: {playerTwoScore?.totalruns || 0}/
-            {playerTwoScore?.totalWickets || 0}
+            player one scored : {playerOneScore?.totalruns} /{" "}
+            {playerOneScore?.totalWickets}
+          </p>
+        )}
+        {currentInning === 1 ? (
+          <p>
+            player One: {totalruns || 0}/{totalWickets || 0}
           </p>
         ) : (
           <p>
-            player One: {playerOneScore?.totalruns || 0}/
-            {playerOneScore?.totalWickets || 0}
+            player Two: {totalruns || 0}/{totalWickets || 0}
           </p>
         )}
+
         {runs.length > 1 && (
           <select className=" px-2 flex flex-col text-black gap-2">
             {runs
@@ -44,20 +51,35 @@ const ScoreBoard = ({
           </select>
         )}
       </div>
-      <div className="text-center">
+      <div className="text-center absolute  left-[45%] top-[18%]">
         <div className="font-bold text-2xl">
-          Player {`${playerTwoScore !== undefined ? "Two" : "One"} `}
+          Player {`${currentInning === 2 ? "Two" : "One"} `}
           {totalruns}-{totalWickets}
         </div>
         <div className="text-sm bg-purple-600 px-2 py-1 rounded">
           RUN RATE 6.98
         </div>
       </div>
-      <div className="flex items-center space-x-4">
+      {/* animation */}
+      <div className="flex gap-3 ">
         {over.map((item, index) => (
           <div
             key={index}
-            className=" flex items-center justify-center rounded-full bg-white text-black h-[50px] w-[50px]"
+            className={`right-[-500px]  animated-ball flex items-center justify-center rounded-full ${
+              item === "W"
+                ? "bg-red-600 text-black"
+                : " bg-violet-600 text-white"
+            }  text-black h-[50px] w-[50px]`}
+          >
+            <span className=" text-lg">{item}</span>
+          </div>
+        ))}
+      </div>
+      <div className="flex gap-2 min-w-[335px] ">
+        {over.map((item, index) => (
+          <div
+            key={index}
+            className={`flex items-center justify-center rounded-full bg-white text-black h-[50px] w-[50px]`}
           >
             <span className=" text-lg">{item}</span>
           </div>

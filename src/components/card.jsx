@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import playerImage from "../assets/cricketground.jpg";
 import "../App.css";
 import PlayerImages from "../assets/vecteezy_cricket-athlete-player_3688363.jpg";
+import { current } from "@reduxjs/toolkit";
 
 const Card = ({
   index,
@@ -18,18 +19,34 @@ const Card = ({
   highScore,
   batAvg,
   setIsInningOver,
+  determineWinner,
   isInningOver,
+  playerOneScore,
+  playerTwoScore,
+  currentInnig,
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   const handleCardClick = () => {
     selectPlayer(index, type);
     setIsFlipped(!isFlipped);
-    if (isInningOver) {
-      setIsFlipped(!isFlipped);
+  };
+
+  useEffect(() => {
+    if (
+      currentInnig === 2 &&
+      playerOneScore.totalruns < playerTwoScore.totalruns
+    ) {
+      determineWinner();
+    }
+  }, [currentInnig, playerOneScore, playerTwoScore]);
+
+  useEffect(() => {
+    if (isInningOver === true) {
+      setIsFlipped(false);
       setIsInningOver(false);
     }
-  };
+  }, [isInningOver]);
 
   return (
     <div

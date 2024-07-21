@@ -41,3 +41,32 @@
   padding: 10px;
   transform: rotateY(180deg);
 }
+
+@keyframes growAndMove {
+  0% {
+    transform: scale(0) translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    opacity: 1;
+  }
+  50% {
+    transform: scale(5) translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) translate(0, 0);
+    top: 0%;
+    left: 55%;
+    opacity: 1;
+  }
+}
+
+.animated-ball {
+  animation: growAndMove 1.4s ease-in-out;
+  position: fixed;
+
+  z-index: 10;
+  border: 1px solid blanchedalmond;
+}
