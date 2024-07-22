@@ -154,7 +154,6 @@ allBowler = cards
   .sort(() => Math.random() - 0.5);
 
 // console.log("allBatsman : ", allBatsman.length);
-
 export const getAllBatsmans = () => {
   const removes = allBatsman.splice(0, 6);
   // console.log(removes.length);

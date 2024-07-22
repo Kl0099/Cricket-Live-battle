@@ -24,7 +24,10 @@ let initialScoreState = {
   over: [],
   balls: 0,
 };
-
+let Totalplayers = {
+  User: "John cina",
+  Computer: "Computer",
+};
 let playerOneScore;
 let playerTwoScore;
 let batsmanscard = getAllBatsmans();
@@ -37,25 +40,28 @@ const Home = () => {
   const [score, setScore] = useState(initialScoreState);
   const [players, setPlayers] = useState([]);
   const [inning, setInning] = useState(1);
-  const [currentPlayer, setCurrentPlayer] = useState("batting");
   const navigate = useNavigate();
   const switchInning = () => {
     if (inning === 1) {
       playerOneScore = score;
       localStorage.setItem("playerOneScore", JSON.stringify(playerOneScore));
-      alert(
-        `first inning is over and score is ${
-          playerOneScore.totalruns + " - " + playerOneScore.totalWickets
-        }`
-      );
+
+      setTimeout(() => {
+        alert(
+          `first inning is over and score is ${
+            playerOneScore.totalruns + " - " + playerOneScore.totalWickets
+          }`
+        );
+      }, 200);
       setInning(2);
-      setCurrentPlayer("bowling");
       // Reset players for bowling side
       setPlayers([]);
       setScore(initialScoreState);
       setIsInningOver(true);
     } else {
-      alert("Game Over");
+      setTimeout(() => {
+        alert(`player Two wins by ${10 - score.totalWickets} `);
+      }, 1700);
       // Add logic to determine the winner
       determineWinner();
     }
@@ -135,27 +141,43 @@ const Home = () => {
     }
   }, [players]);
   useEffect(() => {
+    if (inning === 2 && oldPlayers.length !== 24) {
+      if (
+        playerOneScore.totalruns < score.totalruns &&
+        oldPlayers.length >= 14
+      ) {
+        setTimeout(() => {
+          alert(`player Two wins by ${10 - score.totalWickets} `);
+        }, 1700);
+      }
+    }
+  }, [inning, playerOneScore, score, oldPlayers]);
+  useEffect(() => {
     if (oldPlayers.length === 12) {
-      switchInning();
+      setTimeout(switchInning(), 1600);
     } else if (oldPlayers.length === 24) {
-      determineWinner();
+      setTimeout(determineWinner(), 1600);
     }
   }, [oldPlayers]);
   const determineWinner = () => {
     playerTwoScore = score;
     localStorage.setItem("playerTwoScore", JSON.stringify(playerTwoScore));
     if (playerOneScore.totalruns > playerTwoScore.totalruns) {
-      alert(
-        `Player One wins by ${
-          playerOneScore.totalruns - playerTwoScore.totalruns
-        } runs`
-      );
+      setTimeout(() => {
+        alert(
+          `Player One wins by ${
+            playerOneScore.totalruns - playerTwoScore.totalruns
+          } runs`
+        );
+      }, 1500);
     } else if (playerOneScore.totalruns < playerTwoScore.totalruns) {
-      alert(
-        `Player Two wins by ${
-          playerTwoScore.totalruns - playerOneScore.totalruns
-        } runs`
-      );
+      setTimeout(() => {
+        alert(
+          `Player Two wins by ${
+            playerTwoScore.totalruns - playerOneScore.totalruns
+          } runs`
+        );
+      }, 1500);
     } else {
       alert("Match Draw");
     }
@@ -185,39 +207,32 @@ const Home = () => {
       </main> */}
       <div className=" grid grid-cols-2">
         <div className=" h-screen w-full border ">
-          <h1>batting side : </h1>
-          <div
-            className=" flex flex-wrap
-         "
-          >
-            <Cards
-              type={"batsman"}
-              innnig={inning === 1 ? batsmanscard : batsmanscard2}
-              selectPlayer={selectPlayer}
-              setIsInningOver={setIsInningOver}
-              isInningOver={isInningOver}
-              determineWinner={determineWinner}
-              currentInnig={inning}
-            />
-          </div>
+          {/* batting card :) */}
+          <Cards
+            text={"Batting side : "}
+            score={score}
+            type={"batsman"}
+            innnig={inning === 1 ? batsmanscard : batsmanscard2}
+            selectPlayer={selectPlayer}
+            setIsInningOver={setIsInningOver}
+            isInningOver={isInningOver}
+            determineWinner={determineWinner}
+            currentInnig={inning}
+          />
         </div>
         <div className=" h-screen w-full border ">
-          <h1>bowling side : </h1>
-
-          <div
-            className="flex flex-wrap items-center
-         "
-          >
-            <Cards
-              type={"bowler"}
-              innnig={inning === 1 ? bowlerscard : bowlerscard2}
-              selectPlayer={selectPlayer}
-              setIsInningOver={setIsInningOver}
-              isInningOver={isInningOver}
-              determineWinner={determineWinner}
-              currentInnig={inning}
-            />
-          </div>
+          {/* bowling card :) */}
+          <Cards
+            text={"Bowling side : "}
+            type={"bowler"}
+            score={score}
+            innnig={inning === 1 ? bowlerscard : bowlerscard2}
+            selectPlayer={selectPlayer}
+            setIsInningOver={setIsInningOver}
+            isInningOver={isInningOver}
+            determineWinner={determineWinner}
+            currentInnig={inning}
+          />
         </div>
       </div>
     </div>
@@ -232,31 +247,41 @@ function Cards({
   determineWinner,
   isInningOver,
   currentInnig,
+  score,
+  text,
 }) {
-  return innnig.map((card, index) => {
-    return (
-      <Card
-        type={type}
-        key={index}
-        name={card.name}
-        batting={card.batting}
-        bowling={card.bowling}
-        category={card.category}
-        index={index}
-        selectPlayer={selectPlayer}
-        matches={0}
-        wickets={0}
-        bowlSR={0}
-        iplRuns={0}
-        highScore={0}
-        batAvg={0}
-        setIsInningOver={setIsInningOver}
-        isInningOver={isInningOver}
-        determineWinner={determineWinner}
-        currentInning={currentInnig}
-      />
-    );
-  });
+  return (
+    <>
+      <h1>{text}</h1>
+      <div className="flex flex-wrap items-center">
+        {innnig.map((card, index) => {
+          return (
+            <Card
+              type={type}
+              key={index}
+              name={card.name}
+              batting={card.batting}
+              bowling={card.bowling}
+              category={card.category}
+              index={index}
+              selectPlayer={selectPlayer}
+              matches={0}
+              wickets={0}
+              bowlSR={0}
+              iplRuns={0}
+              highScore={0}
+              batAvg={0}
+              setIsInningOver={setIsInningOver}
+              isInningOver={isInningOver}
+              determineWinner={determineWinner}
+              currentInning={currentInnig}
+              score={score}
+            />
+          );
+        })}
+      </div>
+    </>
+  );
 }
 
 export default Home;

@@ -66,7 +66,6 @@
 .animated-ball {
   animation: growAndMove 1.4s ease-in-out;
   position: fixed;
-
-  z-index: 10;
+  z-index: 20;
   border: 1px solid blanchedalmond;
 }

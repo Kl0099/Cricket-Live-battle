@@ -3,6 +3,10 @@ import playerImage from "../assets/cricketground.jpg";
 import "../App.css";
 import PlayerImages from "../assets/vecteezy_cricket-athlete-player_3688363.jpg";
 import { current } from "@reduxjs/toolkit";
+let Totalplayers = {
+  User: "John cina",
+  Computer: "bheem",
+};
 
 const Card = ({
   index,
@@ -23,6 +27,7 @@ const Card = ({
   isInningOver,
   playerOneScore,
   playerTwoScore,
+  winnerInSecondInning,
   currentInnig,
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
@@ -30,6 +35,13 @@ const Card = ({
   const handleCardClick = () => {
     selectPlayer(index, type);
     setIsFlipped(!isFlipped);
+
+    if (currentInnig === 2) {
+      if (playerOneScore.totalruns < score.runs) {
+        alert("game over ");
+      }
+      console.log("hii");
+    }
   };
 
   useEffect(() => {
@@ -43,8 +55,10 @@ const Card = ({
 
   useEffect(() => {
     if (isInningOver === true) {
-      setIsFlipped(false);
-      setIsInningOver(false);
+      setTimeout(() => {
+        setIsFlipped(false);
+        setIsInningOver(false);
+      }, 1600);
     }
   }, [isInningOver]);
 
