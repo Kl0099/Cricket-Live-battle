@@ -58,7 +58,7 @@ const Card = ({
       setTimeout(() => {
         setIsFlipped(false);
         setIsInningOver(false);
-      }, 1600);
+      }, 100);
     }
   }, [isInningOver]);
 

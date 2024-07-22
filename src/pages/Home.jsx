@@ -45,22 +45,27 @@ const Home = () => {
     if (inning === 1) {
       playerOneScore = score;
       localStorage.setItem("playerOneScore", JSON.stringify(playerOneScore));
-
+      console.log("hiii");
+      setPlayers([]);
+      setTimeout(() => {
+        setIsInningOver(true);
+      }, 400);
       setTimeout(() => {
         alert(
           `first inning is over and score is ${
             playerOneScore.totalruns + " - " + playerOneScore.totalWickets
           }`
         );
-      }, 200);
-      setInning(2);
-      // Reset players for bowling side
-      setPlayers([]);
-      setScore(initialScoreState);
-      setIsInningOver(true);
+      }, 1600);
+      setTimeout(() => {
+        setInning(2);
+        setScore(initialScoreState);
+      }, 1500);
+
+      // console.log("bye");
     } else {
       setTimeout(() => {
-        alert(`player Two wins by ${10 - score.totalWickets} `);
+        alert(`player Two wins by ${10 - score.totalWickets} Wickets`);
       }, 1700);
       // Add logic to determine the winner
       determineWinner();
@@ -147,14 +152,14 @@ const Home = () => {
         oldPlayers.length >= 14
       ) {
         setTimeout(() => {
-          alert(`player Two wins by ${10 - score.totalWickets} `);
+          alert(`player Two wins by ${10 - score.totalWickets} Wickets`);
         }, 1700);
       }
     }
   }, [inning, playerOneScore, score, oldPlayers]);
   useEffect(() => {
     if (oldPlayers.length === 12) {
-      setTimeout(switchInning(), 1600);
+      setTimeout(switchInning(), 100);
     } else if (oldPlayers.length === 24) {
       setTimeout(determineWinner(), 1600);
     }
@@ -179,7 +184,9 @@ const Home = () => {
         );
       }, 1500);
     } else {
-      alert("Match Draw");
+      setTimeout(() => {
+        alert("match Draw");
+      }, 1500);
     }
     // navigate("/inningscore");
     return;
