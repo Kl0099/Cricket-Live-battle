@@ -9,6 +9,13 @@ let Totalplayers = {
 };
 
 const Card = ({
+  innings,
+  turn,
+  setTurn,
+  flipindex,
+  setFlipIndex,
+  previes,
+  setPreviousies,
   index,
   name,
   category,
@@ -35,23 +42,38 @@ const Card = ({
   const handleCardClick = () => {
     selectPlayer(index, type);
     setIsFlipped(!isFlipped);
-
-    if (currentInnig === 2) {
-      if (playerOneScore.totalruns < score.runs) {
-        alert("game over ");
-      }
-      console.log("hii");
-    }
+    setTurn("computer");
+    // if (currentInnig === 2) {
+    //   if (playerOneScore.totalruns < score.runs) {
+    //     alert("game over ");
+    //   }
+    //   console.log("hii");
+    // }
   };
 
   useEffect(() => {
     if (
-      currentInnig === 2 &&
-      playerOneScore.totalruns < playerTwoScore.totalruns
+      // type === "bowler" &&
+      turn === "computer" &&
+      flipindex === name
+      // &&
+      // innings === 1
     ) {
-      determineWinner();
+      setIsFlipped(true);
+      console.log("hii from  card");
+      // setFlipIndex(-1);
+      setTurn("user");
     }
-  }, [currentInnig, playerOneScore, playerTwoScore]);
+  }, [flipindex, turn, type]);
+
+  // useEffect(() => {
+  //   if (
+  //     currentInnig === 2 &&
+  //     playerOneScore.totalruns < playerTwoScore.totalruns
+  //   ) {
+  //     determineWinner();
+  //   }
+  // }, [currentInnig, playerOneScore, playerTwoScore]);
 
   useEffect(() => {
     if (isInningOver === true) {

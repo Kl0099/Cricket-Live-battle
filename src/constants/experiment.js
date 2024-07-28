@@ -152,12 +152,13 @@ let allBowler = [];
 allBowler = cards
   .filter((item) => item.category === "bowler")
   .sort(() => Math.random() - 0.5);
+// console.log(cards.length);
 
 // console.log("allBatsman : ", allBatsman.length);
 export const getAllBatsmans = () => {
   const removes = allBatsman.splice(0, 6);
   // console.log(removes.length);
-  console.log("this is inuf");
+  // console.log("this is inuf");
   return removes;
 };
 // console.log("allBatsman noow : ", allBatsman.length);

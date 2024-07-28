@@ -40,6 +40,10 @@ const Home = () => {
   const [score, setScore] = useState(initialScoreState);
   const [players, setPlayers] = useState([]);
   const [inning, setInning] = useState(1);
+  const [turn, setTurn] = useState("user");
+  const [flipindex, setFlipIndex] = useState(-1);
+  const [previes, setPreviousies] = useState([]);
+
   const navigate = useNavigate();
   const switchInning = () => {
     if (inning === 1) {
@@ -78,14 +82,25 @@ const Home = () => {
         category === "batsman"
           ? batsmanscard.filter((card, idx) => idx === index)
           : bowlerscard.filter((card, idx) => idx === index);
+
       setPlayers([...players, selectedPlayer[0]]);
+      setPreviousies([...previes, selectedPlayer[0]]);
+      // setFlipIndex(bowlerscard[bowlerscard.length - 1].name);
     } else {
       const selectedPlayer =
         category === "batsman"
           ? batsmanscard2.filter((card, idx) => idx === index)
           : bowlerscard2.filter((card, idx) => idx === index);
       setPlayers([...players, selectedPlayer[0]]);
+      setPreviousies([...previes, selectedPlayer[0]]);
     }
+  };
+
+  const computerSelection = (result) => {
+    setPlayers([...players, result]);
+    // setPreviousies([...previes, result]);
+    setPreviousies([...previes, result]);
+    return true;
   };
 
   useEffect(() => {
@@ -145,20 +160,21 @@ const Home = () => {
       }
     }
   }, [players]);
-  useEffect(() => {
-    if (inning === 2 && oldPlayers.length !== 24) {
-      if (
-        playerOneScore.totalruns < score.totalruns &&
-        oldPlayers.length >= 14
-      ) {
-        setTimeout(() => {
-          alert(`player Two wins by ${10 - score.totalWickets} Wickets`);
-        }, 1700);
-      }
-    }
-  }, [inning, playerOneScore, score, oldPlayers]);
+  // useEffect(() => {
+  //   if (inning === 2 && oldPlayers.length !== 24) {
+  //     if (
+  //       playerOneScore.totalruns < score.totalruns &&
+  //       oldPlayers.length >= 14
+  //     ) {
+  //       setTimeout(() => {
+  //         alert(`player Two wins by ${10 - score.totalWickets} Wickets`);
+  //       }, 1700);
+  //     }
+  //   }
+  // }, [inning, playerOneScore, score, oldPlayers]);
   useEffect(() => {
     if (oldPlayers.length === 12) {
+      console.log("old player length is 12");
       setTimeout(switchInning(), 100);
     } else if (oldPlayers.length === 24) {
       setTimeout(determineWinner(), 1600);
@@ -225,6 +241,17 @@ const Home = () => {
             isInningOver={isInningOver}
             determineWinner={determineWinner}
             currentInnig={inning}
+            turn={turn}
+            setTurn={setTurn}
+            flipindex={flipindex}
+            setFlipIndex={setFlipIndex}
+            previes={previes}
+            setPreviousies={setPreviousies}
+            computerSelection={computerSelection}
+            players={players}
+            innings={inning}
+            oldPlayers={oldPlayers}
+            setInning={setInning}
           />
         </div>
         <div className=" h-screen w-full border ">
@@ -239,6 +266,17 @@ const Home = () => {
             isInningOver={isInningOver}
             determineWinner={determineWinner}
             currentInnig={inning}
+            turn={turn}
+            setTurn={setTurn}
+            flipindex={flipindex}
+            setFlipIndex={setFlipIndex}
+            previes={previes}
+            setPreviousies={setPreviousies}
+            computerSelection={computerSelection}
+            players={players}
+            // innings={inning}
+            setInning={setInning}
+            oldPlayers={oldPlayers}
           />
         </div>
       </div>
@@ -256,7 +294,52 @@ function Cards({
   currentInnig,
   score,
   text,
+  turn,
+  setTurn,
+  flipindex,
+  setFlipIndex,
+  previes,
+  setPreviousies,
+  setInning,
+  computerSelection,
+  players,
+  oldPlayers,
+  // innings,
 }) {
+  useEffect(() => {
+    // console.log("hii");
+    console.log("oldplayer : ", oldPlayers.length);
+    if (oldPlayers.length === 12) {
+      console.log("turn over");
+    }
+    if (turn === "computer") {
+      if (currentInnig === 1 && type === "bowler") {
+        // console.log("vopdfmd");
+        let result = innnig.filter((item) => !previes.includes(item));
+        // console.log("reuslt : ", result.length);
+        if (result.length === 0) {
+          // setIsInningOver(true);
+          // setInning(2);
+          return;
+        }
+        // console.log(result[result.length - 1]);
+        setFlipIndex(result[result.length - 1].name);
+        let res = computerSelection(result[result.length - 1]);
+      } else if (currentInnig === 2 && type === "batsman") {
+        // console.log("vopdfmd");
+        let result = innnig.filter((item) => !previes.includes(item));
+        // console.log("reuslt : ", result.length);
+        if (result.length === 0) {
+          setIsInningOver(true);
+          return;
+        }
+        // console.log(result[result.length - 1]);
+        setFlipIndex(result[result.length - 1].name);
+        let res = computerSelection(result[result.length - 1]);
+      }
+      // console.log(flipindex);
+    }
+  }, [turn, type, flipindex, currentInnig, oldPlayers]);
   return (
     <>
       <h1>{text}</h1>
@@ -264,6 +347,13 @@ function Cards({
         {innnig.map((card, index) => {
           return (
             <Card
+              innings={currentInnig}
+              turn={turn}
+              setTurn={setTurn}
+              flipindex={flipindex}
+              setFlipIndex={setFlipIndex}
+              previes={previes}
+              setPreviousies={setPreviousies}
               type={type}
               key={index}
               name={card.name}
