@@ -38,13 +38,15 @@ let Totalplayers = {
 
 const NewPage = () => {
   const [computerIndex, setcomputerIndex] = useState("");
+  const [currentBattingTurn, setcurrentBattingTurn] = useState("");
   const [currentTurn, setCurrentTurn] = useState("user");
   const [currentInning, SetcurrentInning] = useState(1);
   //   this backate conitan one card from bowler and one frm batsman
   const [backet, setBacket] = useState([]);
-  const [modal, setModal] = useState(false);
+  const [modal, setModal] = useState(true);
   const [over, setOver] = useState([]);
   const [previousPlayers, setPreviousPlayers] = useState([]);
+  const [gameOver, setgameOver] = useState(false);
   let [userscore, setuserscore] = useState({
     totalRun: 0,
     totalWickets: 0,
@@ -65,7 +67,7 @@ const NewPage = () => {
     over.forEach((item) => {
       if (item !== "w") {
         // console.log("item :" , item  , "type :" , typeof item)
-        currentInning === 1
+        currentBattingTurn === "user"
           ? setuserscore({
               totalRun: userscore.totalRun + item,
               totalWickets: userscore.totalWickets,
@@ -76,7 +78,7 @@ const NewPage = () => {
             });
       }
       if (item === "w") {
-        currentInning === 1
+        currentBattingTurn === "user"
           ? setuserscore({
               totalWickets: userscore.totalWickets + 1,
               totalRun: userscore.totalRun,
@@ -87,17 +89,28 @@ const NewPage = () => {
             });
       }
     });
-  }, [over, currentInning]);
+  }, [over, currentBattingTurn, currentInning]);
   function compareTwoPlayers() {
     // console.log("yes 2");
     // console.log( "backet player :" ,backet)
-    let firstCard = currentInning === 1 ? backet[0] : backet[1];
-    let secondCard = currentInning === 1 ? backet[1] : backet[0];
-    // console.log("first card : " ,firstCard)
-    // console.log("second card : " ,secondCard)
+    let firstCard = [];
+    let secondCard = [];
+    if (backet[0].category === "batsman") {
+      firstCard = backet[0];
+      secondCard = backet[1];
+    } else {
+      firstCard = backet[1];
+      secondCard = backet[0];
+    }
+    // console.log("first card : ", firstCard);
+    // console.log("second card : ", secondCard);
     if (firstCard.batting >= secondCard.bowling) {
       let run = firstCard.batting - secondCard.bowling;
-      if (run > 6) run = 6;
+      // console.log("rus before selection : ", run);
+      if (run > 6) {
+        run = 6;
+      }
+      // console.log("rus after selection : ", run);
       setOver([...over, run]);
       // setuserscore({totalRun : userscore.totalRun+run , totalWickets : userscore.totalWickets});
       setBacket([]);
@@ -111,9 +124,11 @@ const NewPage = () => {
   useEffect(() => {
     if (backet.length === 2) {
       // setModal(true);
-      compareTwoPlayers();
+      setTimeout(() => {
+        compareTwoPlayers();
+      }, 400);
     }
-  }, [backet, currentInning, computerIndex, currentTurn]);
+  }, [backet, currentTurn]);
 
   useEffect(() => {
     if (previousPlayers.length === 12 && over.length === 6) {
@@ -134,32 +149,86 @@ const NewPage = () => {
     //     setuserscore({totalWickets: userscore.totalWickets + 1, totalRun : userscore.totalRun});
     //   }
     // });
+    setcurrentBattingTurn(currentBattingTurn === "user" ? "computer" : "user");
     // console.log(userscore.totalRun);
     setOver([]);
   };
-  useEffect(() => {
-    // console.log("hii  this is runnning :")
-    if (currentInning === 2 && previousPlayers.length >= 14) {
-      if (computerscore.totalRun > userscore.totalRun) {
-        alert(`you are lost by ${10 - computerscore.totalWickets} wickets `);
+  const alertMessage = (message) => {
+    // setTimeout(() => {
+    alert(message);
+    setgameOver(true);
+    // }, 2000);
+  };
+  const winner = () => {
+    if (
+      currentInning === 2 &&
+      over.length > 1 &&
+      over.length < 6 &&
+      !gameOver
+    ) {
+      if (
+        computerscore.totalRun > userscore.totalRun &&
+        currentBattingTurn === "computer"
+      ) {
+        alertMessage(
+          `computer win  by ${10 - computerscore.totalWickets} wickets `
+        );
         return;
       }
-      if (over.length === 6 && currentInning === 2) {
-        setTimeout(() => {
-          if (computerscore.totalRun < userscore.totalRun) {
-            alert(
-              `you are win by ${
-                userscore.totalRun - computerscore.totalRun
-              } runs`
-            );
-          } else {
-            alert("game over");
-          }
-        }, 2000);
+      if (
+        computerscore.totalRun < userscore.totalRun &&
+        currentBattingTurn === "user"
+      ) {
+        alertMessage(`you  win  by ${10 - userscore.totalWickets} wickets `);
         return;
       }
     }
-  }, [previousPlayers, over, computerscore, currentInning]);
+    if (currentInning === 2 && over.length === 6) {
+      // console.log("why");
+      setTimeout(() => {
+        setgameOver(true);
+      }, 400);
+    }
+  };
+  useEffect(() => {
+    if (
+      over.length === 6 &&
+      currentInning === 2 &&
+      backet.length === 0 &&
+      previousPlayers.length === 24 &&
+      gameOver
+    ) {
+      // setTimeout(() => {
+      if (computerscore.totalRun < userscore.totalRun) {
+        alertMessage(
+          `you are win by ${userscore.totalRun - computerscore.totalRun} runs`
+        );
+      }
+      if (userscore.totalRun === computerscore.totalRun) {
+        alertMessage("match draw");
+      }
+      if (computerscore.totalRun > userscore.totalRun) {
+        alertMessage(
+          `computer win by ${computerscore.totalRun - userscore.totalRun} runs`
+        );
+      }
+      // }, 2000);
+      return;
+    }
+  }, [gameOver, over, setgameOver]);
+  useEffect(() => {
+    // console.log("hii  this is runnning :")
+    setTimeout(() => {
+      winner();
+    }, 1000);
+  }, [
+    over,
+    currentTurn,
+    currentBattingTurn,
+    computerscore,
+    userscore,
+    gameOver,
+  ]);
 
   return (
     <div
@@ -172,9 +241,11 @@ const NewPage = () => {
       }}
     >
       <ScoreBoard
+        currentInning={currentInning}
         userscore={userscore}
         computerscore={computerscore}
         over={over}
+        currentBattingTurn={currentBattingTurn}
       />
       <div className="  grid grid-cols-2">
         <div className=" h-screen w-[80%] flex flex-col items-center  mt-10 ml-5  ">
@@ -194,6 +265,8 @@ const NewPage = () => {
             setPreviousPlayers={setPreviousPlayers}
             computerIndex={computerIndex}
             setcomputerIndex={setcomputerIndex}
+            currentBattingTurn={currentBattingTurn}
+            setcurrentBattingTurn={setcurrentBattingTurn}
           />
         </div>
         <div className=" h-screen w-[80%] flex flex-col items-center mt-10  ml-14">
@@ -213,9 +286,18 @@ const NewPage = () => {
             setPreviousPlayers={setPreviousPlayers}
             computerIndex={computerIndex}
             setcomputerIndex={setcomputerIndex}
+            currentBattingTurn={currentBattingTurn}
+            setcurrentBattingTurn={setcurrentBattingTurn}
           />
         </div>
       </div>
+      {modal && (
+        <ConfirmationModal
+          setModal={setModal}
+          setcurrentBattingTurn={setcurrentBattingTurn}
+          backet={backet}
+        />
+      )}
     </div>
   );
 };

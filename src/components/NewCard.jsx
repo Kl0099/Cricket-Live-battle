@@ -21,6 +21,8 @@ const NewCard = ({
   computerIndex,
   setcomputerIndex,
   type,
+  currentBattingTurn,
+  setcurrentBattingTurn,
 }) => {
   const [isflipped, setIsflipped] = useState(false);
   const [isSecondInningStart, setisSecondInningStart] = useState(false);
@@ -30,14 +32,13 @@ const NewCard = ({
 
     if (currentTurn === "computer" && computerCardIndex === name) {
       // setTimeout(() => {
-      setIsflipped(true);
-      setCurrentTurn("user");
-      setcomputerIndex("");
-      // console.log("card index :" , computerCardIndex);
-      // console.log("name :" , name)
-      // }, 600);
+      setTimeout(() => {
+        setIsflipped(true);
+        setCurrentTurn("user");
+        setcomputerIndex("");
+      }, 400);
     }
-  }, [currentTurn, computerCardIndex, previousPlayers, backet]);
+  }, [currentTurn, computerCardIndex]);
   const handleCardClick = () => {
     // console.log('Card clicked')
     setIsflipped(true);
@@ -68,13 +69,20 @@ const NewCard = ({
       setIsflipped(false);
       setisSecondInningStart(true);
     }
-  }, [currentInning]);
+  }, [currentInning, currentTurn]);
 
   const whichTurn = () => {
+    if (isflipped) {
+      return true;
+    }
     if (
       !isflipped &&
-      ((type === "bowling" && currentTurn === "user" && currentInning === 1) ||
-        (type === "batting" && currentTurn === "user" && currentInning === 2))
+      ((type === "bowling" &&
+        currentTurn === "user" &&
+        currentBattingTurn === "user") ||
+        (type === "batting" &&
+          currentTurn === "user" &&
+          currentBattingTurn === "computer"))
     ) {
       return true;
     } else {

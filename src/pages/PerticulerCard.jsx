@@ -31,6 +31,8 @@ const PerticulerCard = ({
   setPreviousPlayers,
   computerIndex,
   setcomputerIndex,
+  currentBattingTurn,
+  setcurrentBattingTurn,
 }) => {
   const computerSelection = () => {
     // console.log("players :", players);
@@ -42,7 +44,6 @@ const PerticulerCard = ({
     let rendomCard = restCard[restCard.length - 1];
     // console.log("rendom : " , rendomCard)
     // console.log("previous players :", previousPlayers);
-
     // console.log("random card", rendomCard);
     setBacket([
       ...backet,
@@ -68,24 +69,15 @@ const PerticulerCard = ({
   useEffect(() => {
     if (currentTurn === "computer") {
       if (
-        (type === "bowling" && currentInning === 1) ||
-        (type === "batting" && currentInning === 2)
+        (type === "bowling" && currentBattingTurn === "user") ||
+        (type === "batting" && currentBattingTurn === "computer")
       ) {
+        // setTimeout(computerSelection(), 5000);
         computerSelection();
         return;
       }
     }
-  }, [currentTurn]);
-  // useEffect(() => {
-  //   console.log("previous players :", previousPlayers);
-  // }, [previousPlayers]);
-
-  //   then it doent clickable
-  // if((currentTurn === "user" && currentInning === 1 && type === "bowling") || (currentTurn === "user" && currentInning === 2 && type === "batting")){
-  //   return (<div>
-  //     hello my boy
-  //   </div>)
-  // }
+  }, [currentTurn, currentBattingTurn]);
 
   return (
     <>
@@ -116,6 +108,8 @@ const PerticulerCard = ({
               setPreviousPlayers={setPreviousPlayers}
               setBacket={setBacket}
               type={type}
+              currentBattingTurn={currentBattingTurn}
+              setcurrentBattingTurn={setcurrentBattingTurn}
             />
           );
         })}

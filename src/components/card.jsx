@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import playerImage from "../assets/cricketground.jpg";
 import "../App.css";
-import PlayerImages from "../assets/vecteezy_cricket-athlete-player_3688363.jpg";
+// import PlayerImages from "../assets/vecteezy_cricket-athlete-player_3688363.jpg";
 import { current } from "@reduxjs/toolkit";
 let Totalplayers = {
   User: "John cina",

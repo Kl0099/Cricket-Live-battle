@@ -1,0 +1,24 @@
+@keyframes toss {
+  0% {
+    transform: rotateX(0deg);
+  }
+  50% {
+    transform: rotateX(180deg);
+  }
+  100% {
+    transform: rotateX(360deg);
+    /* background-image: url("/public/Head.jpg"); */
+  }
+}
+
+.animate-toss {
+  animation: toss 4s;
+}
+
+.rotate-y-180 {
+  transform: rotateX(180deg);
+}
+
+.bg-gold {
+  background-color: gold;
+}
