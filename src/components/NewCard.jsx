@@ -36,6 +36,7 @@ const NewCard = ({
         setIsflipped(true);
         setCurrentTurn("user");
         setcomputerIndex("");
+        document.body.style.pointerEvents = 'auto';
       }, 400);
     }
   }, [currentTurn, computerCardIndex]);
@@ -61,6 +62,7 @@ const NewCard = ({
       },
     ]);
     setCurrentTurn("computer");
+    document.body.style.pointerEvents = 'none';
   };
 
   useEffect(() => {
@@ -94,7 +96,7 @@ const NewCard = ({
     <div
       className="card-container hover:cursor-pointer hover:scale-95"
       onClick={whichTurn() ? (e) => e.preventDefault() : handleCardClick}
-      // onClick={handleCardClick}
+    // onClick={handleCardClick}
     >
       <div className={`card ${isflipped ? "is-flipped" : ""}`}>
         <div

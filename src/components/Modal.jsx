@@ -17,7 +17,7 @@ const ConfirmationModal = ({ backet, setModal, setcurrentBattingTurn }) => {
       const tossResult = Math.random() < 0.5 ? "heads" : "tails";
       setResult(tossResult);
       setIsTossing(false);
-    }, 4000); // 2 seconds for toss animation
+    }, 2000); // 2 seconds for toss animation
   };
 
   useEffect(() => {
@@ -50,7 +50,7 @@ const ConfirmationModal = ({ backet, setModal, setcurrentBattingTurn }) => {
   }, [choice, result]);
 
   return (
-    <div className="fixed inset-0 z-[1000] grid place-items-center overflow-auto text-gray-900  backdrop-blur-sm     bg-transparent">
+    <div className="fixed inset-0 z-[1000] grid place-items-center overflow-auto text-white  backdrop-blur-lg  bg-transparent">
       <div
         // style={{
         //   backgroundImage: `url(${batsmanbg})`,
@@ -87,7 +87,7 @@ const ConfirmationModal = ({ backet, setModal, setcurrentBattingTurn }) => {
           ></button>
         </div>
         {result && (
-          <p className="mt-4 text-xl">
+          <p className="mt-4 text-xl text-white">
             {result === selectedSide ? "You win!" : "You lose!"} The result is{" "}
             {result}.
           </p>
@@ -124,7 +124,7 @@ const ConfirmationModal = ({ backet, setModal, setcurrentBattingTurn }) => {
           <div className="">
             <div className=" flex gap-2">
               <button
-                className=" hover:scale-95 p-2 border-white  text-black bg-violet-600 px-5 rounded-lg border-2  "
+                className=" hover:scale-95 p-2 border-white  text-white bg-violet-600 px-5 rounded-lg border-2  "
                 onClick={() => setChoice("batting")}
               >
                 batting
